@@ -79,3 +79,15 @@ class UserOps(AdOperations):
         ) 
 
         if not result: raise AdModifyException(f"Error while setting an expiration date on {distinguished_name}")
+
+    def disable(self, distinguished_name: str):
+        
+        # * Disable the account
+        result, _, _, _ = self.connection.modify(
+            distinguished_name,
+            {
+                'userAccountControl': [(MODIFY_REPLACE, [2])]
+            }
+        ) 
+
+        if not result: raise AdModifyException(f"Error while disabling account on {distinguished_name}")

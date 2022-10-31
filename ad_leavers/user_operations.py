@@ -86,7 +86,7 @@ class UserOps(AdOperations):
         result, _, _, _ = self.connection.modify(
             distinguished_name,
             {
-                'userAccountControl': [(MODIFY_REPLACE, [2])]
+                'userAccountControl': [(MODIFY_REPLACE, [514])]
             }
         ) 
 

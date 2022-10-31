@@ -87,7 +87,7 @@ class TestUserOps:
     # def test_get_all(self):
         
     #     # * Arrange
-    #     search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
+    #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
 
     #     # * Act
     #     user_ops = UserOps(

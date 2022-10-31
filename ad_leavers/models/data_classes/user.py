@@ -16,8 +16,8 @@ class User(ObjectClass):
         self.description = schema['attributes'].get('description', None)
         self.display_name = schema['attributes'].get('displayName', None)
         self.member_of = schema['attributes'].get('memberOf', None)
-        self.account_expires = schema['attributes'].get('accountExpires', None)
         self.user_principal_name = schema['attributes'].get('userPrincipalName', None)
+        self.account_expires = schema['attributes'].get('accountExpires', None) if schema['raw_attributes']['accountExpires'][0] != b'0' else None
 
         # * Initialize the parent class
         super().__init__(

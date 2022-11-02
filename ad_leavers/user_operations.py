@@ -10,7 +10,7 @@ from ad_leavers.models.data_classes.user import User
 class UserOps(AdOperations):
 
     def __init__(self, hosts, username, password) -> None: 
-
+        
         # * Set the object type
         self.object_class_type = '(objectclass=user)'
 
@@ -19,7 +19,7 @@ class UserOps(AdOperations):
     
     # > Inherited methods from Parent abstract class
     def get_all(self, search_base: str) -> list[User]: 
-
+        
         # * Make API call
         status, _, response, _ = self.connection.search(
             search_base=search_base,
@@ -34,6 +34,7 @@ class UserOps(AdOperations):
 
     def deep_single_search(self, search_base: str, sam_name: object) -> ObjectClass: 
 
+        # TODO(Improve by adding email)
         # * Construct filter that will perform the deep search
         search_filter = f"(|(sAMAccountName={sam_name})(name={sam_name.replace('.', ' ')}))"
 
@@ -81,7 +82,6 @@ class UserOps(AdOperations):
         if not result: raise AdModifyException(f"Error while setting an expiration date on {distinguished_name}")
 
     def disable(self, distinguished_name: str):
-        
         # * Disable the account
         result, _, _, _ = self.connection.modify(
             distinguished_name,

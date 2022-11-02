@@ -107,8 +107,8 @@ class TestUserOps:
     # def test_get(self):
         
     #     # * Arrange
-    #     search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
-    #     # search_base = "OU=SysOps,OU=Users,OU=cko,DC=cko,DC=test"
+    #     #search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
+    #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
     #     sam_name = "eren.yeager"
 
     #     # * Act

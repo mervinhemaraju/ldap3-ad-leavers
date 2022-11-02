@@ -9,6 +9,8 @@ from ad_leavers.models.data_classes.user import User
 # > It inherits the AdOperations base class for operations
 class UserOps(AdOperations):
 
+    # FIXME(Make sure to call escape_filter_chars() from ldap3.utils.conv on any user input before placing it into a .search() call. This is to avoid possible injection of malicious code. Look at https://www.linkedin.com/pulse/ldap-injection-django-jerin-jose for more information.)
+
     def __init__(self, hosts, username, password) -> None: 
         
         # * Set the object type
@@ -32,25 +34,28 @@ class UserOps(AdOperations):
         # * Return the schema in the ObjectClass model format
         return [User(schema=schema) for schema in response]
 
-    def deep_single_search(self, search_base: str, sam_name: object) -> ObjectClass: 
+    def deep_single_search(self, search_base: str, unique_identifier: object) -> ObjectClass: 
 
-        # TODO(Improve by adding email)
         # * Construct filter that will perform the deep search
-        search_filter = f"(|(sAMAccountName={sam_name})(name={sam_name.replace('.', ' ')}))"
+        search_filter = f"""
+        (|(mail={unique_identifier})
+        (sAMAccountName={unique_identifier.split('@')[0] if '@' in unique_identifier else unique_identifier})
+        (cn={unique_identifier.replace('.', ' ')}))
+        """
 
         # * Make API call
-        status, _, response, _ = self.connection.search(
+        status, result, response, _ = self.connection.search(
             search_base=search_base,
             search_filter=search_filter,
             attributes=ALL_ATTRIBUTES
         )
 
-        if not status: raise AdSearchException(f"Error while searching for: {sam_name} in {search_base}")
+        if not status: raise AdSearchException(f"Error while searching for: {unique_identifier} in {search_base}")
 
         # * Get the users obtained
         users = [User(schema=schema) for schema in response]
 
-        # * Return the usuer if it's found
+        # * Return the user if it's found
         return users[0] if len(users) != 0 else None 
     
     def delete(self, distinguished_name: str) -> None: 

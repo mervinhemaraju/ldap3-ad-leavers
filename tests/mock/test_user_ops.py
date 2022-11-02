@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
-import os, pytest
+import os
 from ad_leavers.user_operations import UserOps
+from ad_leavers.models.data_classes.user import User
 
 class TestUserOps:
     
@@ -109,7 +110,7 @@ class TestUserOps:
     #     # * Arrange
     #     #search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
     #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
-    #     sam_name = "eren.yeager"
+    #     unique_identifier = "eren.yeager"
 
     #     # * Act
     #     user_ops = UserOps(
@@ -118,7 +119,7 @@ class TestUserOps:
     #         password=self.password,
     #     )
 
-    #     user = user_ops.deep_single_search(search_base=search_base, sam_name=sam_name)
+    #     user: User = user_ops.deep_single_search(search_base=search_base, unique_identifier=unique_identifier)
 
     #     print(f"Connection: {user_ops.connection}")
     #     print(f"User: {user.name}")

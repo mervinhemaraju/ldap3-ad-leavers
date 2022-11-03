@@ -44,13 +44,11 @@ class UserOps(AdOperations):
         """
 
         # * Make API call
-        status, result, response, _ = self.connection.search(
+        _, _, response, _ = self.connection.search(
             search_base=search_base,
             search_filter=search_filter,
             attributes=ALL_ATTRIBUTES
         )
-
-        if not status: raise AdSearchException(f"Error while searching for: {unique_identifier} in {search_base}")
 
         # * Get the users obtained
         users = [User(schema=schema) for schema in response]

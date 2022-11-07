@@ -2,14 +2,19 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from ad_leavers.models.core.object_class import ObjectClass
 
-# > This is the User data class model
-# > It inherits from the ObjectClass model
-# > This class will model a user object in AD
-# > It will take a schema as parameter
 @dataclass
-class User(ObjectClass):
-    
+class User(ObjectClass):   
+
     def __init__(self, schema: dict):
+
+        """
+            This is the User data class model
+            It inherits from the ObjectClass model
+            This class will model a user object in an AD
+
+        Parameters:
+            schema (dict): The schema of an AD object that represent a User/Person from ldap3
+        """     
         
         # * Extract necessary parameters
         self.sam_account_name = schema['attributes']['sAMAccountName']
@@ -31,9 +36,15 @@ class User(ObjectClass):
     def __str__(self) -> str:
         return ','.join('%s=%s' % item for item in vars(self).items())
 
-
     def is_eligible_to_disable(self):
-        
+
+        """
+            This function will verify if the user is eligible to have its account disabled
+            Eligibility will be calculated whether the account has already expired or not
+        Returns:
+            bool: Returns True or False
+        """        
+
         # * Verify if an expiration has been set on the account
         if self.account_expires:
 
@@ -44,7 +55,19 @@ class User(ObjectClass):
         return False
 
     def is_eligible_for_deletion(self, days_limit: int):
-        
+
+        """
+            This function will verify if the user is eligible to have its account deleted
+            Eligibility will be calculated whether the days_limit argument has already exceeded the
+            date that the account has been expired
+
+        Args:
+            days_limit (int): The days after which an account is considered eligible to be deleted after it has been expired
+
+        Returns:
+            bool: Returns True or False
+        """        
+
         # * Verify if an expiration has been set on the account
         if self.account_expires:
 

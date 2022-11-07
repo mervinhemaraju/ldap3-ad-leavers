@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
-import os, pytest
+import os
 from ad_leavers.user_operations import UserOps
+from ad_leavers.models.data_classes.user import User
 
 class TestUserOps:
     
@@ -8,6 +9,42 @@ class TestUserOps:
     host_servers = os.environ['HOST_SERVERS'].split(',')
     username = os.environ['USERNAME']
     password = os.environ['PASSWORD']
+
+    # def test_disable_user(self):
+        
+    #     # * Arrange
+    #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
+    #     sam_name = "eren.yeager"
+        
+    #     # * Act
+
+    #     try:
+
+    #         user_ops = UserOps(
+    #             hosts=self.host_servers,
+    #             username=self.username,
+    #             password=self.password,
+    #         )
+
+    #         # * Search for the user
+    #         user = user_ops.deep_single_search(search_base=search_base, sam_name=sam_name)
+
+    #         # * Set expiration on user
+    #         user_ops.disable(
+    #             distinguished_name=user.distinguished_name
+    #         )
+
+    #         results = "Passed"
+
+    #     except Exception as e:
+
+    #         results = f"Failed"
+
+    #     print(f"Connection: {user_ops.connection}")
+    #     print(f"Results: {results}")
+
+    #     # * Assert
+    #     assert False
 
     # def test_set_expiration(self):
         
@@ -51,7 +88,7 @@ class TestUserOps:
     # def test_get_all(self):
         
     #     # * Arrange
-    #     search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
+    #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
 
     #     # * Act
     #     user_ops = UserOps(
@@ -71,9 +108,9 @@ class TestUserOps:
     # def test_get(self):
         
     #     # * Arrange
-    #     search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
-    #     # search_base = "OU=SysOps,OU=Users,OU=cko,DC=cko,DC=test"
-    #     sam_name = "eren.yeager"
+    #     #search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
+    #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
+    #     unique_identifier = "eren.yeager"
 
     #     # * Act
     #     user_ops = UserOps(
@@ -82,7 +119,7 @@ class TestUserOps:
     #         password=self.password,
     #     )
 
-    #     user = user_ops.deep_single_search(search_base=search_base, sam_name=sam_name)
+    #     user: User = user_ops.deep_single_search(search_base=search_base, unique_identifier=unique_identifier)
 
     #     print(f"Connection: {user_ops.connection}")
     #     print(f"User: {user.name}")

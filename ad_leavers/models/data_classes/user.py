@@ -19,12 +19,14 @@ class User(ObjectClass):
         # * Extract necessary parameters
         self.sam_account_name = schema['attributes']['sAMAccountName']
         self.common_name = schema['attributes']['cn']
+        self.user_account_control = schema['attributes']['userAccountControl']
         self.display_name = schema['attributes'].get('displayName', None)
         self.email = schema['attributes'].get('mail', None)
         self.description = schema['attributes'].get('description', None)
         self.member_of = schema['attributes'].get('memberOf', None)
         self.user_principal_name = schema['attributes'].get('userPrincipalName', None)
         self.account_expires = schema['attributes'].get('accountExpires', None) if schema['raw_attributes']['accountExpires'][0] != b'0' else None
+        self.is_disabled = bool(self.user_account_control & 0x0002)
 
         # * Initialize the parent class
         super().__init__(
@@ -44,15 +46,12 @@ class User(ObjectClass):
         Returns:
             bool: Returns True or False
         """        
+        # * If the account has already been disabled or the account hasn't expired yet, it is not eligible
+        if self.user_account_control == 514 or self.account_expires == None:
+            return False
 
-        # * Verify if an expiration has been set on the account
-        if self.account_expires:
-
-            # * If the account has already expired, it is eligibe to be disabled
-            return self.account_expires.replace(tzinfo=None) < datetime.today().replace(tzinfo=None)
-
-        # * If there is not an expiration setup, the account is not eligible to be disabled
-        return False
+        # * If the account has already expired, it is eligibe to be disabled
+        return self.account_expires.replace(tzinfo=None) < datetime.today().replace(tzinfo=None)
 
     def is_eligible_for_deletion(self, days_limit: int):
 
@@ -68,12 +67,11 @@ class User(ObjectClass):
             bool: Returns True or False
         """        
 
-        # * Verify if an expiration has been set on the account
-        if self.account_expires:
+        # * If an expiration wasn't set, it is not eligible
+        if self.account_expires == None: 
+            return False
 
-            # * Check whether the days limit has exceeded since the
-            # * account was expired
-            return (self.account_expires.replace(tzinfo=None) + timedelta(days=days_limit)) <= datetime.today().replace(tzinfo=None)
+        # * Check whether the days limit has exceeded since the
+        # * account was expired
+        return (self.account_expires.replace(tzinfo=None) + timedelta(days=days_limit)) <= datetime.today().replace(tzinfo=None)
         
-        # * If there is not an expiration setup, the account is not eligible for deletion
-        return False

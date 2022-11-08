@@ -104,13 +104,16 @@ class TestUserOps:
 
     #     # * Assert
     #     assert False
+
+    #66050
+    #66048
     
     # def test_get(self):
         
     #     # * Arrange
     #     #search_base = "OU=Leavers,OU=Users,OU=checkoutaws,DC=checkoutaws,DC=local"
     #     search_base = "OU=Leavers,OU=Users,OU=cko,DC=cko,DC=test"
-    #     unique_identifier = "eren.yeager"
+    #     unique_identifier = "ian.worrall"
 
     #     # * Act
     #     user_ops = UserOps(
@@ -122,7 +125,7 @@ class TestUserOps:
     #     user: User = user_ops.deep_single_search(search_base=search_base, unique_identifier=unique_identifier)
 
     #     print(f"Connection: {user_ops.connection}")
-    #     print(f"User: {user.name}")
+    #     print(f"User: {user.user_account_control}")
 
     #     # * Assert
     #     assert False

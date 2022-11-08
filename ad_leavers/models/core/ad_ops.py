@@ -4,6 +4,8 @@ from ad_leavers.models.core.object_class import ObjectClass
 
 class AdOperations(ABC):
 
+    __CONNECTION_TIMEOUT = 10
+
     def __init__(self, hosts, username: str, password: str) -> None:
 
         """
@@ -18,7 +20,7 @@ class AdOperations(ABC):
         """        
 
         # * Create a server pool and add the servers in it
-        server_pool = ServerPool([Server(host) for host in hosts], RANDOM)
+        server_pool = ServerPool([Server(host, connect_timeout=self.__CONNECTION_TIMEOUT) for host in hosts], RANDOM)
 
         # * Create a connection for use
         self.connection = Connection(server_pool, username, password, client_strategy=SAFE_SYNC, auto_bind=True)

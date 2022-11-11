@@ -48,13 +48,13 @@ class UserOps(AdOperations):
         """      
         
         # * Make API call
-        status, _, response, _ = self.connection.search(
+        status, result, response, _ = self.connection.search(
             search_base=search_base,
             search_filter=self.object_class_type,
             attributes=ALL_ATTRIBUTES
         )
 
-        if not status: raise AdSearchException(f"Error while searching the searchbase: {search_base}")
+        if not status: raise AdSearchException(f"Error while searching the searchbase {search_base}: {result['message']}")
 
         # * Return the schema in the ObjectClass model format
         return [User(schema=schema) for schema in response]
@@ -106,9 +106,9 @@ class UserOps(AdOperations):
         """        
         
         # * Delete the dn
-        result, _, _, _  = self.connection.delete(distinguished_name)
+        status, result, _, _  = self.connection.delete(distinguished_name)
 
-        if not result: raise AdModifyException(f"Error while deleting {distinguished_name}")
+        if not status: raise AdModifyException(f"Error while deleting {distinguished_name}: {result['message']}")
 
     def move(self, distinguished_name: str, cn:str, new_ou: dict) -> None: 
 
@@ -125,10 +125,9 @@ class UserOps(AdOperations):
         """        
         
         # * Modify the DN
-        result, _, _, _  = self.connection.modify_dn(distinguished_name, f'cn={cn}', new_superior=new_ou)
+        status, result, _, _  = self.connection.modify_dn(distinguished_name, f'cn={cn}', new_superior=new_ou)
 
-        if not result: raise AdModifyException(f"Error while moving {distinguished_name}")
-
+        if not status: raise AdModifyException(f"Error while moving {distinguished_name}: {result['message']}")
 
     # > Unique class methods
     def set_expiration(self, distinguished_name: str, expiration_date: datetime):
@@ -145,14 +144,14 @@ class UserOps(AdOperations):
         """        
         
         # * Set the expiration date
-        result, _, _, _ = self.connection.modify(
+        status, result, _, _ = self.connection.modify(
             distinguished_name,
             {
                 'accountExpires': [(MODIFY_REPLACE, [expiration_date])]
             }
         ) 
 
-        if not result: raise AdModifyException(f"Error while setting an expiration date on {distinguished_name}")
+        if not status: raise AdModifyException(f"Error while setting an expiration date on {distinguished_name}: {result['message']}")
 
     def disable(self, distinguished_name: str):
         """
@@ -166,11 +165,11 @@ class UserOps(AdOperations):
         """        
         
         # * Disable the account
-        result, _, _, _ = self.connection.modify(
+        status, result, _, _ = self.connection.modify(
             distinguished_name,
             {
                 'userAccountControl': [(MODIFY_REPLACE, [514])]
             }
         ) 
 
-        if not result: raise AdModifyException(f"Error while disabling account on {distinguished_name}")
+        if not status: raise AdModifyException(f"Error while disabling account on {distinguished_name}: {result['message']}")

@@ -78,80 +78,82 @@
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="k">class</span> <span class="nc">AdOperations</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="n">__CONNECTION_TIMEOUT</span> <span class="o">=</span> <span class="mi">10</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">            This is an abstract class that will model all AD objects of this project</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">            All AD object class operations will inherit from this class</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">            Authentication is done in constructor</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">        Args:</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">            hosts (list[str]): This is a list of AD hosts that will be added to the Server Pool</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">            username (str): This is the username that ldap3 will assume to connect to the AD sosts</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            password (str): This is the password for the account</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="c1"># * Create a server pool and add the servers in it</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="n">server_pool</span> <span class="o">=</span> <span class="n">ServerPool</span><span class="p">([</span><span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="p">)</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">],</span> <span class="n">RANDOM</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="c1"># * Create a connection for use</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">server_pool</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">client_strategy</span><span class="o">=</span><span class="n">SAFE_SYNC</span><span class="p">,</span> <span class="n">auto_bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ObjectClass</span><span class="p">]:</span> 
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">            This function will get all objects from the given search base</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">        Args:</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">        Returns:</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">            list[ObjectClass]: The AD list of objects obtained</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="k">pass</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">deep_single_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unique_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObjectClass</span><span class="p">:</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">            This function will search for single object that matches the unique_identifier criteria.</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">            If multiple is obtained, it will return the first one obtained.</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">        Args:</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">            unique_identifier (str): A unique identifier that will be used to identify the object</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">        Returns:</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">            ObjectClass: An AD object class</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">pass</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cn</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_ou</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="sd">            This function will move one AD object from an OU to another</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="sd">        Args:</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">            cn (str): The cn of the AD object</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">            new_ou (dict): The OU where to move the AD object</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="k">pass</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="sd">            This function will delete an AD object</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="sd">        Args:</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="k">pass</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>
-</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>    
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">            This is an abstract class that will model all AD objects of this project</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">            All AD object class operations will inherit from this class</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">            Authentication is done in constructor</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        Args:</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            hosts (list[str]): This is a list of AD hosts that will be added to the Server Pool</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">            username (str): This is the username that ldap3 will assume to connect to the AD sosts</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">            password (str): This is the password for the account</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="c1"># * Create a server pool and add the servers in it</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="n">server_pool</span> <span class="o">=</span> <span class="n">ServerPool</span><span class="p">([</span><span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">connect_timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__CONNECTION_TIMEOUT</span><span class="p">)</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">],</span> <span class="n">RANDOM</span><span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="c1"># * Create a connection for use</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">server_pool</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">client_strategy</span><span class="o">=</span><span class="n">SAFE_SYNC</span><span class="p">,</span> <span class="n">auto_bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ObjectClass</span><span class="p">]:</span> 
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">            This function will get all objects from the given search base</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">        Args:</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        Returns:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">            list[ObjectClass]: The AD list of objects obtained</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="k">pass</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="k">def</span> <span class="nf">deep_single_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unique_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObjectClass</span><span class="p">:</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">            This function will search for single object that matches the unique_identifier criteria.</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">            If multiple is obtained, it will return the first one obtained.</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">        Args:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">            unique_identifier (str): A unique identifier that will be used to identify the object</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">        Returns:</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">            ObjectClass: An AD object class</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="k">pass</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cn</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_ou</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="sd">            This function will move one AD object from an OU to another</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">        Args:</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="sd">            cn (str): The cn of the AD object</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">            new_ou (dict): The OU where to move the AD object</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>        <span class="k">pass</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="sd">            This function will delete an AD object</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="sd">        Args:</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>        <span class="k">pass</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    
 </span></pre></div>
 
 
@@ -169,78 +171,80 @@
     <a class="headerlink" href="#AdOperations"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations-6"><a href="#AdOperations-6"><span class="linenos"> 6</span></a><span class="k">class</span> <span class="nc">AdOperations</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 </span><span id="AdOperations-7"><a href="#AdOperations-7"><span class="linenos"> 7</span></a>
-</span><span id="AdOperations-8"><a href="#AdOperations-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="AdOperations-8"><a href="#AdOperations-8"><span class="linenos"> 8</span></a>    <span class="n">__CONNECTION_TIMEOUT</span> <span class="o">=</span> <span class="mi">10</span>
 </span><span id="AdOperations-9"><a href="#AdOperations-9"><span class="linenos"> 9</span></a>
-</span><span id="AdOperations-10"><a href="#AdOperations-10"><span class="linenos">10</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations-11"><a href="#AdOperations-11"><span class="linenos">11</span></a><span class="sd">            This is an abstract class that will model all AD objects of this project</span>
-</span><span id="AdOperations-12"><a href="#AdOperations-12"><span class="linenos">12</span></a><span class="sd">            All AD object class operations will inherit from this class</span>
-</span><span id="AdOperations-13"><a href="#AdOperations-13"><span class="linenos">13</span></a><span class="sd">            Authentication is done in constructor</span>
-</span><span id="AdOperations-14"><a href="#AdOperations-14"><span class="linenos">14</span></a>
-</span><span id="AdOperations-15"><a href="#AdOperations-15"><span class="linenos">15</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations-16"><a href="#AdOperations-16"><span class="linenos">16</span></a><span class="sd">            hosts (list[str]): This is a list of AD hosts that will be added to the Server Pool</span>
-</span><span id="AdOperations-17"><a href="#AdOperations-17"><span class="linenos">17</span></a><span class="sd">            username (str): This is the username that ldap3 will assume to connect to the AD sosts</span>
-</span><span id="AdOperations-18"><a href="#AdOperations-18"><span class="linenos">18</span></a><span class="sd">            password (str): This is the password for the account</span>
-</span><span id="AdOperations-19"><a href="#AdOperations-19"><span class="linenos">19</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations-20"><a href="#AdOperations-20"><span class="linenos">20</span></a>
-</span><span id="AdOperations-21"><a href="#AdOperations-21"><span class="linenos">21</span></a>        <span class="c1"># * Create a server pool and add the servers in it</span>
-</span><span id="AdOperations-22"><a href="#AdOperations-22"><span class="linenos">22</span></a>        <span class="n">server_pool</span> <span class="o">=</span> <span class="n">ServerPool</span><span class="p">([</span><span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="p">)</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">],</span> <span class="n">RANDOM</span><span class="p">)</span>
-</span><span id="AdOperations-23"><a href="#AdOperations-23"><span class="linenos">23</span></a>
-</span><span id="AdOperations-24"><a href="#AdOperations-24"><span class="linenos">24</span></a>        <span class="c1"># * Create a connection for use</span>
-</span><span id="AdOperations-25"><a href="#AdOperations-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">server_pool</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">client_strategy</span><span class="o">=</span><span class="n">SAFE_SYNC</span><span class="p">,</span> <span class="n">auto_bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="AdOperations-26"><a href="#AdOperations-26"><span class="linenos">26</span></a>
-</span><span id="AdOperations-27"><a href="#AdOperations-27"><span class="linenos">27</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations-28"><a href="#AdOperations-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ObjectClass</span><span class="p">]:</span> 
-</span><span id="AdOperations-29"><a href="#AdOperations-29"><span class="linenos">29</span></a>
-</span><span id="AdOperations-30"><a href="#AdOperations-30"><span class="linenos">30</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations-31"><a href="#AdOperations-31"><span class="linenos">31</span></a><span class="sd">            This function will get all objects from the given search base</span>
-</span><span id="AdOperations-32"><a href="#AdOperations-32"><span class="linenos">32</span></a>
-</span><span id="AdOperations-33"><a href="#AdOperations-33"><span class="linenos">33</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations-34"><a href="#AdOperations-34"><span class="linenos">34</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
-</span><span id="AdOperations-35"><a href="#AdOperations-35"><span class="linenos">35</span></a>
-</span><span id="AdOperations-36"><a href="#AdOperations-36"><span class="linenos">36</span></a><span class="sd">        Returns:</span>
-</span><span id="AdOperations-37"><a href="#AdOperations-37"><span class="linenos">37</span></a><span class="sd">            list[ObjectClass]: The AD list of objects obtained</span>
-</span><span id="AdOperations-38"><a href="#AdOperations-38"><span class="linenos">38</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations-39"><a href="#AdOperations-39"><span class="linenos">39</span></a>        <span class="k">pass</span>
-</span><span id="AdOperations-40"><a href="#AdOperations-40"><span class="linenos">40</span></a>
-</span><span id="AdOperations-41"><a href="#AdOperations-41"><span class="linenos">41</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations-42"><a href="#AdOperations-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">deep_single_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unique_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObjectClass</span><span class="p">:</span>
-</span><span id="AdOperations-43"><a href="#AdOperations-43"><span class="linenos">43</span></a>
-</span><span id="AdOperations-44"><a href="#AdOperations-44"><span class="linenos">44</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations-45"><a href="#AdOperations-45"><span class="linenos">45</span></a><span class="sd">            This function will search for single object that matches the unique_identifier criteria.</span>
-</span><span id="AdOperations-46"><a href="#AdOperations-46"><span class="linenos">46</span></a><span class="sd">            If multiple is obtained, it will return the first one obtained.</span>
-</span><span id="AdOperations-47"><a href="#AdOperations-47"><span class="linenos">47</span></a>
-</span><span id="AdOperations-48"><a href="#AdOperations-48"><span class="linenos">48</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations-49"><a href="#AdOperations-49"><span class="linenos">49</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
-</span><span id="AdOperations-50"><a href="#AdOperations-50"><span class="linenos">50</span></a><span class="sd">            unique_identifier (str): A unique identifier that will be used to identify the object</span>
-</span><span id="AdOperations-51"><a href="#AdOperations-51"><span class="linenos">51</span></a>
-</span><span id="AdOperations-52"><a href="#AdOperations-52"><span class="linenos">52</span></a><span class="sd">        Returns:</span>
-</span><span id="AdOperations-53"><a href="#AdOperations-53"><span class="linenos">53</span></a><span class="sd">            ObjectClass: An AD object class</span>
-</span><span id="AdOperations-54"><a href="#AdOperations-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations-55"><a href="#AdOperations-55"><span class="linenos">55</span></a>        <span class="k">pass</span>
-</span><span id="AdOperations-56"><a href="#AdOperations-56"><span class="linenos">56</span></a>
-</span><span id="AdOperations-57"><a href="#AdOperations-57"><span class="linenos">57</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations-58"><a href="#AdOperations-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cn</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_ou</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
-</span><span id="AdOperations-59"><a href="#AdOperations-59"><span class="linenos">59</span></a>
-</span><span id="AdOperations-60"><a href="#AdOperations-60"><span class="linenos">60</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations-61"><a href="#AdOperations-61"><span class="linenos">61</span></a><span class="sd">            This function will move one AD object from an OU to another</span>
-</span><span id="AdOperations-62"><a href="#AdOperations-62"><span class="linenos">62</span></a>
-</span><span id="AdOperations-63"><a href="#AdOperations-63"><span class="linenos">63</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations-64"><a href="#AdOperations-64"><span class="linenos">64</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
-</span><span id="AdOperations-65"><a href="#AdOperations-65"><span class="linenos">65</span></a><span class="sd">            cn (str): The cn of the AD object</span>
-</span><span id="AdOperations-66"><a href="#AdOperations-66"><span class="linenos">66</span></a><span class="sd">            new_ou (dict): The OU where to move the AD object</span>
-</span><span id="AdOperations-67"><a href="#AdOperations-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations-68"><a href="#AdOperations-68"><span class="linenos">68</span></a>        <span class="k">pass</span>
-</span><span id="AdOperations-69"><a href="#AdOperations-69"><span class="linenos">69</span></a>
-</span><span id="AdOperations-70"><a href="#AdOperations-70"><span class="linenos">70</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations-71"><a href="#AdOperations-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
-</span><span id="AdOperations-72"><a href="#AdOperations-72"><span class="linenos">72</span></a>
-</span><span id="AdOperations-73"><a href="#AdOperations-73"><span class="linenos">73</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations-74"><a href="#AdOperations-74"><span class="linenos">74</span></a><span class="sd">            This function will delete an AD object</span>
-</span><span id="AdOperations-75"><a href="#AdOperations-75"><span class="linenos">75</span></a>
-</span><span id="AdOperations-76"><a href="#AdOperations-76"><span class="linenos">76</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations-77"><a href="#AdOperations-77"><span class="linenos">77</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
-</span><span id="AdOperations-78"><a href="#AdOperations-78"><span class="linenos">78</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations-79"><a href="#AdOperations-79"><span class="linenos">79</span></a>        <span class="k">pass</span>
+</span><span id="AdOperations-10"><a href="#AdOperations-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="AdOperations-11"><a href="#AdOperations-11"><span class="linenos">11</span></a>
+</span><span id="AdOperations-12"><a href="#AdOperations-12"><span class="linenos">12</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations-13"><a href="#AdOperations-13"><span class="linenos">13</span></a><span class="sd">            This is an abstract class that will model all AD objects of this project</span>
+</span><span id="AdOperations-14"><a href="#AdOperations-14"><span class="linenos">14</span></a><span class="sd">            All AD object class operations will inherit from this class</span>
+</span><span id="AdOperations-15"><a href="#AdOperations-15"><span class="linenos">15</span></a><span class="sd">            Authentication is done in constructor</span>
+</span><span id="AdOperations-16"><a href="#AdOperations-16"><span class="linenos">16</span></a>
+</span><span id="AdOperations-17"><a href="#AdOperations-17"><span class="linenos">17</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations-18"><a href="#AdOperations-18"><span class="linenos">18</span></a><span class="sd">            hosts (list[str]): This is a list of AD hosts that will be added to the Server Pool</span>
+</span><span id="AdOperations-19"><a href="#AdOperations-19"><span class="linenos">19</span></a><span class="sd">            username (str): This is the username that ldap3 will assume to connect to the AD sosts</span>
+</span><span id="AdOperations-20"><a href="#AdOperations-20"><span class="linenos">20</span></a><span class="sd">            password (str): This is the password for the account</span>
+</span><span id="AdOperations-21"><a href="#AdOperations-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations-22"><a href="#AdOperations-22"><span class="linenos">22</span></a>
+</span><span id="AdOperations-23"><a href="#AdOperations-23"><span class="linenos">23</span></a>        <span class="c1"># * Create a server pool and add the servers in it</span>
+</span><span id="AdOperations-24"><a href="#AdOperations-24"><span class="linenos">24</span></a>        <span class="n">server_pool</span> <span class="o">=</span> <span class="n">ServerPool</span><span class="p">([</span><span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">connect_timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__CONNECTION_TIMEOUT</span><span class="p">)</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">],</span> <span class="n">RANDOM</span><span class="p">)</span>
+</span><span id="AdOperations-25"><a href="#AdOperations-25"><span class="linenos">25</span></a>
+</span><span id="AdOperations-26"><a href="#AdOperations-26"><span class="linenos">26</span></a>        <span class="c1"># * Create a connection for use</span>
+</span><span id="AdOperations-27"><a href="#AdOperations-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">server_pool</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">client_strategy</span><span class="o">=</span><span class="n">SAFE_SYNC</span><span class="p">,</span> <span class="n">auto_bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="AdOperations-28"><a href="#AdOperations-28"><span class="linenos">28</span></a>
+</span><span id="AdOperations-29"><a href="#AdOperations-29"><span class="linenos">29</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations-30"><a href="#AdOperations-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ObjectClass</span><span class="p">]:</span> 
+</span><span id="AdOperations-31"><a href="#AdOperations-31"><span class="linenos">31</span></a>
+</span><span id="AdOperations-32"><a href="#AdOperations-32"><span class="linenos">32</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations-33"><a href="#AdOperations-33"><span class="linenos">33</span></a><span class="sd">            This function will get all objects from the given search base</span>
+</span><span id="AdOperations-34"><a href="#AdOperations-34"><span class="linenos">34</span></a>
+</span><span id="AdOperations-35"><a href="#AdOperations-35"><span class="linenos">35</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations-36"><a href="#AdOperations-36"><span class="linenos">36</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
+</span><span id="AdOperations-37"><a href="#AdOperations-37"><span class="linenos">37</span></a>
+</span><span id="AdOperations-38"><a href="#AdOperations-38"><span class="linenos">38</span></a><span class="sd">        Returns:</span>
+</span><span id="AdOperations-39"><a href="#AdOperations-39"><span class="linenos">39</span></a><span class="sd">            list[ObjectClass]: The AD list of objects obtained</span>
+</span><span id="AdOperations-40"><a href="#AdOperations-40"><span class="linenos">40</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations-41"><a href="#AdOperations-41"><span class="linenos">41</span></a>        <span class="k">pass</span>
+</span><span id="AdOperations-42"><a href="#AdOperations-42"><span class="linenos">42</span></a>
+</span><span id="AdOperations-43"><a href="#AdOperations-43"><span class="linenos">43</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations-44"><a href="#AdOperations-44"><span class="linenos">44</span></a>    <span class="k">def</span> <span class="nf">deep_single_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unique_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObjectClass</span><span class="p">:</span>
+</span><span id="AdOperations-45"><a href="#AdOperations-45"><span class="linenos">45</span></a>
+</span><span id="AdOperations-46"><a href="#AdOperations-46"><span class="linenos">46</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations-47"><a href="#AdOperations-47"><span class="linenos">47</span></a><span class="sd">            This function will search for single object that matches the unique_identifier criteria.</span>
+</span><span id="AdOperations-48"><a href="#AdOperations-48"><span class="linenos">48</span></a><span class="sd">            If multiple is obtained, it will return the first one obtained.</span>
+</span><span id="AdOperations-49"><a href="#AdOperations-49"><span class="linenos">49</span></a>
+</span><span id="AdOperations-50"><a href="#AdOperations-50"><span class="linenos">50</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations-51"><a href="#AdOperations-51"><span class="linenos">51</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
+</span><span id="AdOperations-52"><a href="#AdOperations-52"><span class="linenos">52</span></a><span class="sd">            unique_identifier (str): A unique identifier that will be used to identify the object</span>
+</span><span id="AdOperations-53"><a href="#AdOperations-53"><span class="linenos">53</span></a>
+</span><span id="AdOperations-54"><a href="#AdOperations-54"><span class="linenos">54</span></a><span class="sd">        Returns:</span>
+</span><span id="AdOperations-55"><a href="#AdOperations-55"><span class="linenos">55</span></a><span class="sd">            ObjectClass: An AD object class</span>
+</span><span id="AdOperations-56"><a href="#AdOperations-56"><span class="linenos">56</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations-57"><a href="#AdOperations-57"><span class="linenos">57</span></a>        <span class="k">pass</span>
+</span><span id="AdOperations-58"><a href="#AdOperations-58"><span class="linenos">58</span></a>
+</span><span id="AdOperations-59"><a href="#AdOperations-59"><span class="linenos">59</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations-60"><a href="#AdOperations-60"><span class="linenos">60</span></a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cn</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_ou</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+</span><span id="AdOperations-61"><a href="#AdOperations-61"><span class="linenos">61</span></a>
+</span><span id="AdOperations-62"><a href="#AdOperations-62"><span class="linenos">62</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations-63"><a href="#AdOperations-63"><span class="linenos">63</span></a><span class="sd">            This function will move one AD object from an OU to another</span>
+</span><span id="AdOperations-64"><a href="#AdOperations-64"><span class="linenos">64</span></a>
+</span><span id="AdOperations-65"><a href="#AdOperations-65"><span class="linenos">65</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations-66"><a href="#AdOperations-66"><span class="linenos">66</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
+</span><span id="AdOperations-67"><a href="#AdOperations-67"><span class="linenos">67</span></a><span class="sd">            cn (str): The cn of the AD object</span>
+</span><span id="AdOperations-68"><a href="#AdOperations-68"><span class="linenos">68</span></a><span class="sd">            new_ou (dict): The OU where to move the AD object</span>
+</span><span id="AdOperations-69"><a href="#AdOperations-69"><span class="linenos">69</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations-70"><a href="#AdOperations-70"><span class="linenos">70</span></a>        <span class="k">pass</span>
+</span><span id="AdOperations-71"><a href="#AdOperations-71"><span class="linenos">71</span></a>
+</span><span id="AdOperations-72"><a href="#AdOperations-72"><span class="linenos">72</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations-73"><a href="#AdOperations-73"><span class="linenos">73</span></a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+</span><span id="AdOperations-74"><a href="#AdOperations-74"><span class="linenos">74</span></a>
+</span><span id="AdOperations-75"><a href="#AdOperations-75"><span class="linenos">75</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations-76"><a href="#AdOperations-76"><span class="linenos">76</span></a><span class="sd">            This function will delete an AD object</span>
+</span><span id="AdOperations-77"><a href="#AdOperations-77"><span class="linenos">77</span></a>
+</span><span id="AdOperations-78"><a href="#AdOperations-78"><span class="linenos">78</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations-79"><a href="#AdOperations-79"><span class="linenos">79</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
+</span><span id="AdOperations-80"><a href="#AdOperations-80"><span class="linenos">80</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations-81"><a href="#AdOperations-81"><span class="linenos">81</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -259,24 +263,24 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#AdOperations.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.__init__-8"><a href="#AdOperations.__init__-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="AdOperations.__init__-9"><a href="#AdOperations.__init__-9"><span class="linenos"> 9</span></a>
-</span><span id="AdOperations.__init__-10"><a href="#AdOperations.__init__-10"><span class="linenos">10</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations.__init__-11"><a href="#AdOperations.__init__-11"><span class="linenos">11</span></a><span class="sd">            This is an abstract class that will model all AD objects of this project</span>
-</span><span id="AdOperations.__init__-12"><a href="#AdOperations.__init__-12"><span class="linenos">12</span></a><span class="sd">            All AD object class operations will inherit from this class</span>
-</span><span id="AdOperations.__init__-13"><a href="#AdOperations.__init__-13"><span class="linenos">13</span></a><span class="sd">            Authentication is done in constructor</span>
-</span><span id="AdOperations.__init__-14"><a href="#AdOperations.__init__-14"><span class="linenos">14</span></a>
-</span><span id="AdOperations.__init__-15"><a href="#AdOperations.__init__-15"><span class="linenos">15</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations.__init__-16"><a href="#AdOperations.__init__-16"><span class="linenos">16</span></a><span class="sd">            hosts (list[str]): This is a list of AD hosts that will be added to the Server Pool</span>
-</span><span id="AdOperations.__init__-17"><a href="#AdOperations.__init__-17"><span class="linenos">17</span></a><span class="sd">            username (str): This is the username that ldap3 will assume to connect to the AD sosts</span>
-</span><span id="AdOperations.__init__-18"><a href="#AdOperations.__init__-18"><span class="linenos">18</span></a><span class="sd">            password (str): This is the password for the account</span>
-</span><span id="AdOperations.__init__-19"><a href="#AdOperations.__init__-19"><span class="linenos">19</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations.__init__-20"><a href="#AdOperations.__init__-20"><span class="linenos">20</span></a>
-</span><span id="AdOperations.__init__-21"><a href="#AdOperations.__init__-21"><span class="linenos">21</span></a>        <span class="c1"># * Create a server pool and add the servers in it</span>
-</span><span id="AdOperations.__init__-22"><a href="#AdOperations.__init__-22"><span class="linenos">22</span></a>        <span class="n">server_pool</span> <span class="o">=</span> <span class="n">ServerPool</span><span class="p">([</span><span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="p">)</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">],</span> <span class="n">RANDOM</span><span class="p">)</span>
-</span><span id="AdOperations.__init__-23"><a href="#AdOperations.__init__-23"><span class="linenos">23</span></a>
-</span><span id="AdOperations.__init__-24"><a href="#AdOperations.__init__-24"><span class="linenos">24</span></a>        <span class="c1"># * Create a connection for use</span>
-</span><span id="AdOperations.__init__-25"><a href="#AdOperations.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">server_pool</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">client_strategy</span><span class="o">=</span><span class="n">SAFE_SYNC</span><span class="p">,</span> <span class="n">auto_bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.__init__-10"><a href="#AdOperations.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="AdOperations.__init__-11"><a href="#AdOperations.__init__-11"><span class="linenos">11</span></a>
+</span><span id="AdOperations.__init__-12"><a href="#AdOperations.__init__-12"><span class="linenos">12</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations.__init__-13"><a href="#AdOperations.__init__-13"><span class="linenos">13</span></a><span class="sd">            This is an abstract class that will model all AD objects of this project</span>
+</span><span id="AdOperations.__init__-14"><a href="#AdOperations.__init__-14"><span class="linenos">14</span></a><span class="sd">            All AD object class operations will inherit from this class</span>
+</span><span id="AdOperations.__init__-15"><a href="#AdOperations.__init__-15"><span class="linenos">15</span></a><span class="sd">            Authentication is done in constructor</span>
+</span><span id="AdOperations.__init__-16"><a href="#AdOperations.__init__-16"><span class="linenos">16</span></a>
+</span><span id="AdOperations.__init__-17"><a href="#AdOperations.__init__-17"><span class="linenos">17</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations.__init__-18"><a href="#AdOperations.__init__-18"><span class="linenos">18</span></a><span class="sd">            hosts (list[str]): This is a list of AD hosts that will be added to the Server Pool</span>
+</span><span id="AdOperations.__init__-19"><a href="#AdOperations.__init__-19"><span class="linenos">19</span></a><span class="sd">            username (str): This is the username that ldap3 will assume to connect to the AD sosts</span>
+</span><span id="AdOperations.__init__-20"><a href="#AdOperations.__init__-20"><span class="linenos">20</span></a><span class="sd">            password (str): This is the password for the account</span>
+</span><span id="AdOperations.__init__-21"><a href="#AdOperations.__init__-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations.__init__-22"><a href="#AdOperations.__init__-22"><span class="linenos">22</span></a>
+</span><span id="AdOperations.__init__-23"><a href="#AdOperations.__init__-23"><span class="linenos">23</span></a>        <span class="c1"># * Create a server pool and add the servers in it</span>
+</span><span id="AdOperations.__init__-24"><a href="#AdOperations.__init__-24"><span class="linenos">24</span></a>        <span class="n">server_pool</span> <span class="o">=</span> <span class="n">ServerPool</span><span class="p">([</span><span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">connect_timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__CONNECTION_TIMEOUT</span><span class="p">)</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">],</span> <span class="n">RANDOM</span><span class="p">)</span>
+</span><span id="AdOperations.__init__-25"><a href="#AdOperations.__init__-25"><span class="linenos">25</span></a>
+</span><span id="AdOperations.__init__-26"><a href="#AdOperations.__init__-26"><span class="linenos">26</span></a>        <span class="c1"># * Create a connection for use</span>
+</span><span id="AdOperations.__init__-27"><a href="#AdOperations.__init__-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">server_pool</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">client_strategy</span><span class="o">=</span><span class="n">SAFE_SYNC</span><span class="p">,</span> <span class="n">auto_bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -304,19 +308,19 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#AdOperations.get_all"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.get_all-27"><a href="#AdOperations.get_all-27"><span class="linenos">27</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations.get_all-28"><a href="#AdOperations.get_all-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ObjectClass</span><span class="p">]:</span> 
-</span><span id="AdOperations.get_all-29"><a href="#AdOperations.get_all-29"><span class="linenos">29</span></a>
-</span><span id="AdOperations.get_all-30"><a href="#AdOperations.get_all-30"><span class="linenos">30</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations.get_all-31"><a href="#AdOperations.get_all-31"><span class="linenos">31</span></a><span class="sd">            This function will get all objects from the given search base</span>
-</span><span id="AdOperations.get_all-32"><a href="#AdOperations.get_all-32"><span class="linenos">32</span></a>
-</span><span id="AdOperations.get_all-33"><a href="#AdOperations.get_all-33"><span class="linenos">33</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations.get_all-34"><a href="#AdOperations.get_all-34"><span class="linenos">34</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
-</span><span id="AdOperations.get_all-35"><a href="#AdOperations.get_all-35"><span class="linenos">35</span></a>
-</span><span id="AdOperations.get_all-36"><a href="#AdOperations.get_all-36"><span class="linenos">36</span></a><span class="sd">        Returns:</span>
-</span><span id="AdOperations.get_all-37"><a href="#AdOperations.get_all-37"><span class="linenos">37</span></a><span class="sd">            list[ObjectClass]: The AD list of objects obtained</span>
-</span><span id="AdOperations.get_all-38"><a href="#AdOperations.get_all-38"><span class="linenos">38</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations.get_all-39"><a href="#AdOperations.get_all-39"><span class="linenos">39</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.get_all-29"><a href="#AdOperations.get_all-29"><span class="linenos">29</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations.get_all-30"><a href="#AdOperations.get_all-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ObjectClass</span><span class="p">]:</span> 
+</span><span id="AdOperations.get_all-31"><a href="#AdOperations.get_all-31"><span class="linenos">31</span></a>
+</span><span id="AdOperations.get_all-32"><a href="#AdOperations.get_all-32"><span class="linenos">32</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations.get_all-33"><a href="#AdOperations.get_all-33"><span class="linenos">33</span></a><span class="sd">            This function will get all objects from the given search base</span>
+</span><span id="AdOperations.get_all-34"><a href="#AdOperations.get_all-34"><span class="linenos">34</span></a>
+</span><span id="AdOperations.get_all-35"><a href="#AdOperations.get_all-35"><span class="linenos">35</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations.get_all-36"><a href="#AdOperations.get_all-36"><span class="linenos">36</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
+</span><span id="AdOperations.get_all-37"><a href="#AdOperations.get_all-37"><span class="linenos">37</span></a>
+</span><span id="AdOperations.get_all-38"><a href="#AdOperations.get_all-38"><span class="linenos">38</span></a><span class="sd">        Returns:</span>
+</span><span id="AdOperations.get_all-39"><a href="#AdOperations.get_all-39"><span class="linenos">39</span></a><span class="sd">            list[ObjectClass]: The AD list of objects obtained</span>
+</span><span id="AdOperations.get_all-40"><a href="#AdOperations.get_all-40"><span class="linenos">40</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations.get_all-41"><a href="#AdOperations.get_all-41"><span class="linenos">41</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -343,21 +347,21 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#AdOperations.deep_single_search"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.deep_single_search-41"><a href="#AdOperations.deep_single_search-41"><span class="linenos">41</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations.deep_single_search-42"><a href="#AdOperations.deep_single_search-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">deep_single_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unique_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObjectClass</span><span class="p">:</span>
-</span><span id="AdOperations.deep_single_search-43"><a href="#AdOperations.deep_single_search-43"><span class="linenos">43</span></a>
-</span><span id="AdOperations.deep_single_search-44"><a href="#AdOperations.deep_single_search-44"><span class="linenos">44</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations.deep_single_search-45"><a href="#AdOperations.deep_single_search-45"><span class="linenos">45</span></a><span class="sd">            This function will search for single object that matches the unique_identifier criteria.</span>
-</span><span id="AdOperations.deep_single_search-46"><a href="#AdOperations.deep_single_search-46"><span class="linenos">46</span></a><span class="sd">            If multiple is obtained, it will return the first one obtained.</span>
-</span><span id="AdOperations.deep_single_search-47"><a href="#AdOperations.deep_single_search-47"><span class="linenos">47</span></a>
-</span><span id="AdOperations.deep_single_search-48"><a href="#AdOperations.deep_single_search-48"><span class="linenos">48</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations.deep_single_search-49"><a href="#AdOperations.deep_single_search-49"><span class="linenos">49</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
-</span><span id="AdOperations.deep_single_search-50"><a href="#AdOperations.deep_single_search-50"><span class="linenos">50</span></a><span class="sd">            unique_identifier (str): A unique identifier that will be used to identify the object</span>
-</span><span id="AdOperations.deep_single_search-51"><a href="#AdOperations.deep_single_search-51"><span class="linenos">51</span></a>
-</span><span id="AdOperations.deep_single_search-52"><a href="#AdOperations.deep_single_search-52"><span class="linenos">52</span></a><span class="sd">        Returns:</span>
-</span><span id="AdOperations.deep_single_search-53"><a href="#AdOperations.deep_single_search-53"><span class="linenos">53</span></a><span class="sd">            ObjectClass: An AD object class</span>
-</span><span id="AdOperations.deep_single_search-54"><a href="#AdOperations.deep_single_search-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations.deep_single_search-55"><a href="#AdOperations.deep_single_search-55"><span class="linenos">55</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.deep_single_search-43"><a href="#AdOperations.deep_single_search-43"><span class="linenos">43</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations.deep_single_search-44"><a href="#AdOperations.deep_single_search-44"><span class="linenos">44</span></a>    <span class="k">def</span> <span class="nf">deep_single_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unique_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObjectClass</span><span class="p">:</span>
+</span><span id="AdOperations.deep_single_search-45"><a href="#AdOperations.deep_single_search-45"><span class="linenos">45</span></a>
+</span><span id="AdOperations.deep_single_search-46"><a href="#AdOperations.deep_single_search-46"><span class="linenos">46</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations.deep_single_search-47"><a href="#AdOperations.deep_single_search-47"><span class="linenos">47</span></a><span class="sd">            This function will search for single object that matches the unique_identifier criteria.</span>
+</span><span id="AdOperations.deep_single_search-48"><a href="#AdOperations.deep_single_search-48"><span class="linenos">48</span></a><span class="sd">            If multiple is obtained, it will return the first one obtained.</span>
+</span><span id="AdOperations.deep_single_search-49"><a href="#AdOperations.deep_single_search-49"><span class="linenos">49</span></a>
+</span><span id="AdOperations.deep_single_search-50"><a href="#AdOperations.deep_single_search-50"><span class="linenos">50</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations.deep_single_search-51"><a href="#AdOperations.deep_single_search-51"><span class="linenos">51</span></a><span class="sd">            search_base (str): The AD search base that will be looked up from</span>
+</span><span id="AdOperations.deep_single_search-52"><a href="#AdOperations.deep_single_search-52"><span class="linenos">52</span></a><span class="sd">            unique_identifier (str): A unique identifier that will be used to identify the object</span>
+</span><span id="AdOperations.deep_single_search-53"><a href="#AdOperations.deep_single_search-53"><span class="linenos">53</span></a>
+</span><span id="AdOperations.deep_single_search-54"><a href="#AdOperations.deep_single_search-54"><span class="linenos">54</span></a><span class="sd">        Returns:</span>
+</span><span id="AdOperations.deep_single_search-55"><a href="#AdOperations.deep_single_search-55"><span class="linenos">55</span></a><span class="sd">            ObjectClass: An AD object class</span>
+</span><span id="AdOperations.deep_single_search-56"><a href="#AdOperations.deep_single_search-56"><span class="linenos">56</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations.deep_single_search-57"><a href="#AdOperations.deep_single_search-57"><span class="linenos">57</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -386,18 +390,18 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#AdOperations.move"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.move-57"><a href="#AdOperations.move-57"><span class="linenos">57</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations.move-58"><a href="#AdOperations.move-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cn</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_ou</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
-</span><span id="AdOperations.move-59"><a href="#AdOperations.move-59"><span class="linenos">59</span></a>
-</span><span id="AdOperations.move-60"><a href="#AdOperations.move-60"><span class="linenos">60</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations.move-61"><a href="#AdOperations.move-61"><span class="linenos">61</span></a><span class="sd">            This function will move one AD object from an OU to another</span>
-</span><span id="AdOperations.move-62"><a href="#AdOperations.move-62"><span class="linenos">62</span></a>
-</span><span id="AdOperations.move-63"><a href="#AdOperations.move-63"><span class="linenos">63</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations.move-64"><a href="#AdOperations.move-64"><span class="linenos">64</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
-</span><span id="AdOperations.move-65"><a href="#AdOperations.move-65"><span class="linenos">65</span></a><span class="sd">            cn (str): The cn of the AD object</span>
-</span><span id="AdOperations.move-66"><a href="#AdOperations.move-66"><span class="linenos">66</span></a><span class="sd">            new_ou (dict): The OU where to move the AD object</span>
-</span><span id="AdOperations.move-67"><a href="#AdOperations.move-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations.move-68"><a href="#AdOperations.move-68"><span class="linenos">68</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.move-59"><a href="#AdOperations.move-59"><span class="linenos">59</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations.move-60"><a href="#AdOperations.move-60"><span class="linenos">60</span></a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cn</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_ou</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+</span><span id="AdOperations.move-61"><a href="#AdOperations.move-61"><span class="linenos">61</span></a>
+</span><span id="AdOperations.move-62"><a href="#AdOperations.move-62"><span class="linenos">62</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations.move-63"><a href="#AdOperations.move-63"><span class="linenos">63</span></a><span class="sd">            This function will move one AD object from an OU to another</span>
+</span><span id="AdOperations.move-64"><a href="#AdOperations.move-64"><span class="linenos">64</span></a>
+</span><span id="AdOperations.move-65"><a href="#AdOperations.move-65"><span class="linenos">65</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations.move-66"><a href="#AdOperations.move-66"><span class="linenos">66</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
+</span><span id="AdOperations.move-67"><a href="#AdOperations.move-67"><span class="linenos">67</span></a><span class="sd">            cn (str): The cn of the AD object</span>
+</span><span id="AdOperations.move-68"><a href="#AdOperations.move-68"><span class="linenos">68</span></a><span class="sd">            new_ou (dict): The OU where to move the AD object</span>
+</span><span id="AdOperations.move-69"><a href="#AdOperations.move-69"><span class="linenos">69</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations.move-70"><a href="#AdOperations.move-70"><span class="linenos">70</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -423,16 +427,16 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#AdOperations.delete"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.delete-70"><a href="#AdOperations.delete-70"><span class="linenos">70</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="AdOperations.delete-71"><a href="#AdOperations.delete-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
-</span><span id="AdOperations.delete-72"><a href="#AdOperations.delete-72"><span class="linenos">72</span></a>
-</span><span id="AdOperations.delete-73"><a href="#AdOperations.delete-73"><span class="linenos">73</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AdOperations.delete-74"><a href="#AdOperations.delete-74"><span class="linenos">74</span></a><span class="sd">            This function will delete an AD object</span>
-</span><span id="AdOperations.delete-75"><a href="#AdOperations.delete-75"><span class="linenos">75</span></a>
-</span><span id="AdOperations.delete-76"><a href="#AdOperations.delete-76"><span class="linenos">76</span></a><span class="sd">        Args:</span>
-</span><span id="AdOperations.delete-77"><a href="#AdOperations.delete-77"><span class="linenos">77</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
-</span><span id="AdOperations.delete-78"><a href="#AdOperations.delete-78"><span class="linenos">78</span></a><span class="sd">        &quot;&quot;&quot;</span>        
-</span><span id="AdOperations.delete-79"><a href="#AdOperations.delete-79"><span class="linenos">79</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AdOperations.delete-72"><a href="#AdOperations.delete-72"><span class="linenos">72</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="AdOperations.delete-73"><a href="#AdOperations.delete-73"><span class="linenos">73</span></a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distinguished_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+</span><span id="AdOperations.delete-74"><a href="#AdOperations.delete-74"><span class="linenos">74</span></a>
+</span><span id="AdOperations.delete-75"><a href="#AdOperations.delete-75"><span class="linenos">75</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AdOperations.delete-76"><a href="#AdOperations.delete-76"><span class="linenos">76</span></a><span class="sd">            This function will delete an AD object</span>
+</span><span id="AdOperations.delete-77"><a href="#AdOperations.delete-77"><span class="linenos">77</span></a>
+</span><span id="AdOperations.delete-78"><a href="#AdOperations.delete-78"><span class="linenos">78</span></a><span class="sd">        Args:</span>
+</span><span id="AdOperations.delete-79"><a href="#AdOperations.delete-79"><span class="linenos">79</span></a><span class="sd">            distinguished_name (str): The dn of the AD object</span>
+</span><span id="AdOperations.delete-80"><a href="#AdOperations.delete-80"><span class="linenos">80</span></a><span class="sd">        &quot;&quot;&quot;</span>        
+</span><span id="AdOperations.delete-81"><a href="#AdOperations.delete-81"><span class="linenos">81</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 

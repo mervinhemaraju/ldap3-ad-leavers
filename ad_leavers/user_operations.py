@@ -1,15 +1,13 @@
 from datetime import datetime
 from ldap3 import ALL_ATTRIBUTES, MODIFY_REPLACE
+from ldap3.utils.conv import escape_filter_chars
 from ad_leavers.models.core.ad_ops import AdOperations
 from ad_leavers.models.core.exceptions import AdSearchException, AdModifyException
-from ad_leavers.models.core.object_class import ObjectClass
 from ad_leavers.models.data_classes.user import User
 
 # > This is the UserOps class that will work with the User dataclass
 # > It inherits the AdOperations base class for operations
 class UserOps(AdOperations):
-    
-    # FIXME(Make sure to call escape_filter_chars() from ldap3.utils.conv on any user input before placing it into a .search() call. This is to avoid possible injection of malicious code. Look at https://www.linkedin.com/pulse/ldap-injection-django-jerin-jose for more information.)
 
     def __init__(self, hosts, username, password) -> None: 
 
@@ -72,6 +70,9 @@ class UserOps(AdOperations):
         Returns:
             User: returns a User object
         """        
+        
+        # * Pass unique_identifier to a filter to prevent injections
+        unique_identifier = escape_filter_chars(unique_identifier)
 
         # * Construct filter that will perform the deep search
         search_filter = f"""

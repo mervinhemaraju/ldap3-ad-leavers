@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as rm:
 # * Build the setup()
 setup(
     name="ldap3-ad-leavers",
-    version="1.1.2",
+    version="1.2.0",
     author="Mervin Hemaraju",
     author_email="th3pl4gu33@gmail.com",
     description="A helper library for offboarding user from AD.",

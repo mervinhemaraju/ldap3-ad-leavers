@@ -47,7 +47,7 @@ class User(ObjectClass):
             bool: Returns True or False
         """        
         # * If the account has already been disabled or the account hasn't expired yet, it is not eligible
-        if self.user_account_control == 514 or self.account_expires == None:
+        if self.is_disabled or self.account_expires == None:
             return False
 
         # * If the account has already expired, it is eligibe to be disabled
